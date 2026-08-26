@@ -1,0 +1,37 @@
+name: Destroy Infra
+ 
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "destroy" to confirm — this deletes real infrastructure'
+        required: true
+        type: string
+
+jobs:
+
+  confirm-check:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Verify confirmation input
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "destroy" ]; then
+            echo "::error::Confirmation text did not match 'destroy'. Aborting."
+            exit 1
+          fi
+          echo "Confirmed — proceeding with destroy."
+
+  tf-destroy:
+    needs: confirm-check
+    uses: guilherme-aroliveira/actions-library/.github/workflows/tf-destroy.yaml@main
+    permissions:
+      id-token: write
+      contents: read
+    with:
+      work_dir: './terraform/environment/'
+      tf_version: '1.15.9'
+    secrets:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+      AWS_BUCKET_KEY: ${{ secrets.AWS_BUCKET_KEY }}
+      AWS_ASSUME_ROLE: ${{ secrets.AWS_ASSUME_ROLE }}
