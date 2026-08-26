@@ -28,7 +28,7 @@ jobs:
     permissions:
       contents: read
     with:
-      work_dir: './terraform/environment/'
+      work_dir: 'terraform/environment/'
       tf_version: '1.15.9'
  
   tf-test:
@@ -37,9 +37,9 @@ jobs:
     permissions:
       contents: read
     with:
-      work_dir: './terraform/environment/'
+      work_dir: 'terraform/environment/'
       tf_version: '1.15.9'
-      modules_dir: './terraform/modules/'
+      modules_dir: 'terraform/modules/'
 
   tf-plan:
     needs: tf-test
@@ -52,7 +52,7 @@ jobs:
       id-token: write
       contents: read
     with:
-      work_dir: './terraform/environment/'
+      work_dir: 'terraform/environment/'
       tf_version: '1.15.9'
       tf_env: 'dev'
     secrets: 
@@ -68,7 +68,7 @@ jobs:
       id-token: write
       contents: read
     with:
-      work_dir: './terraform/environment/'
+      work_dir: 'terraform/environment/'
       tf_version: '1.15.9'
       tf_env: 'dev'
     secrets: inherit
