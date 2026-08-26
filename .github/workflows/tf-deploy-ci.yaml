@@ -1,0 +1,74 @@
+name: Deploy Infra
+ 
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - closed
+    branches: [main]
+  
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  gitleaks:
+    uses: guilherme-aroliveira/actions-library/.github/workflows/gitleaks.yaml@main
+    permissions:
+      contents: read
+
+  tf-lint:
+    needs: gitleaks
+    uses: guilherme-aroliveira/actions-library/.github/workflows/tf-lint.yaml@main
+    permissions:
+      contents: read
+    with:
+      work_dir: './terraform/environment/'
+      tf_version: '1.15.9'
+ 
+  tf-test:
+    needs: tf-lint
+    uses: guilherme-aroliveira/actions-library/.github/workflows/tf-test.yaml@main
+    permissions:
+      contents: read
+    with:
+      work_dir: './terraform/environment/'
+      tf_version: '1.15.9'
+      modules_dir: './terraform/modules/'
+
+  tf-plan:
+    needs: tf-test
+    #if: |
+    #  !cancelled() &&
+    #  ((github.event_name == 'pull_request' && github.base_ref == 'main') ||
+    #  (github.event_name == 'push' && github.ref == 'refs/heads/main'))
+    uses: guilherme-aroliveira/actions-library/.github/workflows/tf-plan.yaml@main
+    permissions:
+      id-token: write
+      contents: read
+    with:
+      work_dir: './terraform/environment/'
+      tf_version: '1.15.9'
+      tf_env: 'dev'
+    secrets: 
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+      AWS_BUCKET_KEY: ${{ secrets.AWS_BUCKET_KEY }}
+      AWS_ASSUME_ROLE: ${{ secrets.AWS_ASSUME_ROLE }}
+
+  tf-apply:
+    needs: tf-plan
+    uses: guilherme-aroliveira/actions-library/.github/workflows/tf-apply.yaml@main
+    permissions:
+      id-token: write
+      contents: read
+    with:
+      work_dir: './terraform/environment/'
+      tf_version: '1.15.9'
+      tf_env: 'dev'
+    secrets: inherit
