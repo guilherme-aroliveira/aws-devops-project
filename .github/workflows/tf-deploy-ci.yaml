@@ -3,11 +3,6 @@ name: Deploy Infra
 on:
   push:
     branches: [main]
-  pull_request:
-    types:
-      - opened
-      - synchronize
-    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,32 +10,7 @@ concurrency:
 
 jobs:
 
-  gitleaks:
-    uses: guilherme-aroliveira/actions-library/.github/workflows/gitleaks.yaml@main
-    permissions:
-      contents: read
-
-  tf-lint:
-    needs: gitleaks
-    uses: guilherme-aroliveira/actions-library/.github/workflows/tf-lint.yaml@main
-    permissions:
-      contents: read
-    with:
-      work_dir: './terraform/environment/'
-      tf_version: '1.15.9'
-
-  tf-test:
-    needs: tf-lint
-    uses: guilherme-aroliveira/actions-library/.github/workflows/tf-test.yaml@main
-    permissions:
-      contents: read
-    with:
-      work_dir: './terraform/environment/'
-      tf_version: '1.15.9'
-      modules_dir: './terraform/modules/'
-
   tf-plan:
-    needs: tf-test
     uses: guilherme-aroliveira/actions-library/.github/workflows/tf-plan.yaml@main
     permissions:
       id-token: write
