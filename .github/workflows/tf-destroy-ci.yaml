@@ -28,7 +28,7 @@ jobs:
       id-token: write
       contents: read
     with:
-      work_dir: './terraform/environment/'
+      work_dir: 'terraform/environment/'
       tf_version: '1.15.9'
     secrets:
       AWS_REGION: ${{ secrets.AWS_REGION }}
