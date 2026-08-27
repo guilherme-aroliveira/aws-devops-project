@@ -3,6 +3,11 @@ variable "env" {
   type        = string
 }
 
+variable "tags" {
+  type = map
+  description = "Tags to add to AWS resources"
+}
+
 variable "vpc_cidr" {
   description = "VPC cidr block"
   type        = string

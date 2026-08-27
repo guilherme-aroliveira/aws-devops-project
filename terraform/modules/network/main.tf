@@ -5,7 +5,7 @@ resource "aws_vpc" "main_vpc" {
   enable_dns_hostnames = true // expose DNS instead of an IP address
 
   tags = merge(
-    local.tags,
+    var.tags,
     {
       Name = "Main VPC"
     }
@@ -17,7 +17,7 @@ resource "aws_internet_gateway" "vpc_igw" {
   vpc_id = aws_vpc.main_vpc.id
 
   tags = merge(
-    local.tags,
+    var.tags,
     {
       Name = "Main IGW"
     }
@@ -31,7 +31,7 @@ resource "aws_eip" "nat_gateway_eip" {
   depends_on = [aws_internet_gateway.vpc_igw]
 
   tags = merge(
-    local.tags,
+    var.tags,
     {
       Name = "EIP IGW"
     }
@@ -46,7 +46,7 @@ resource "aws_nat_gateway" "nat_gateway" {
   depends_on = [aws_subnet.public_subnets]
 
   tags = merge(
-    local.tags,
+    var.tags,
     {
       Name = "NAT Gateway"
     }
@@ -65,7 +65,7 @@ resource "aws_route_table" "public_rt" {
   depends_on = [aws_internet_gateway.vpc_igw]
 
   tags = merge(
-    local.tags,
+    var.tags,
     {
       Name = "Public Route Table"
     }
@@ -82,7 +82,7 @@ resource "aws_route_table" "private_rt" {
   }
 
   tags = merge(
-    local.tags,
+    var.tags,
     {
       Name = "Private route table"
     }
@@ -118,7 +118,7 @@ resource "aws_subnet" "public_subnets" {
   map_public_ip_on_launch = true
 
   tags = merge(
-    local.tags,
+    var.tags,
     {
       Name                     = each.key
       "kubernetes.io/role/elb" = 1
@@ -135,7 +135,7 @@ resource "aws_subnet" "private_subnets" {
   availability_zone = tolist(data.aws_availability_zones.available.names)[each.value]
 
   tags = merge(
-    local.tags,
+    var.tags,
     {
       Name                              = each.key
       "kubernetes.io/role/internal-elb" = 1
