@@ -1,0 +1,36 @@
+# Local .terraform directories
+**/.terraform/*
+#/aws/move/climate_risk_account/environments/prod/.terraform
+
+# .tfstate files
+*tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+
+# Ignore any .tfvars files that are genrated automatically fo erach Terraform run. Most
+# .tfvars files are managed as part of confuration and so should be included in
+# version control
+#
+# example.tfvars
+#*.tfvars
+
+# Ignore override files as they are usually used t override resources locally and so
+# are not checked in
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Include override files you do wish to add to version control using negated pattern
+#
+# !example_override.tf
+
+# Include tfplan to igore the plan output of command: terraform -out=tfplan
+#
+# example: *tfplan*
+
+# Include configuration which are used on local environment, they should
+# be versioned, because they may contain sensitive data.
+aws.conf

@@ -13,7 +13,7 @@ resource "aws_ecr_repository" "ecr_repo" {
   }
 
   tags = merge(
-    local.tags,
+    
     {
       Name = each.key
     }
