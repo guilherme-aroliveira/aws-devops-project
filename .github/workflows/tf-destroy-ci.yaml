@@ -30,6 +30,7 @@ jobs:
     with:
       work_dir: './terraform/environment/'
       tf_version: '1.15.9'
+      tf_env: 'dev'
     secrets:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
