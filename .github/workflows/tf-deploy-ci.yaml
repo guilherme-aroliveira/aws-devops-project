@@ -28,7 +28,7 @@ jobs:
     with:
       work_dir: './terraform/environment/'
       tf_version: '1.15.9'
- 
+
   tf-test:
     needs: tf-lint
     uses: guilherme-aroliveira/actions-library/.github/workflows/tf-test.yaml@main
